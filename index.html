@@ -341,12 +341,12 @@
 <nav class="nav">
   <div class="nav-logo">TWWFIO <span>Week 1 — Your Money, Your Move</span></div>
   <div class="nav-pills">
-    <button class="nav-pill active" onclick="showPage('intro')">Intro</button>
-    <button class="nav-pill" onclick="showPage('banking')">Banking</button>
-    <button class="nav-pill" onclick="showPage('savings')">Savings</button>
-    <button class="nav-pill" onclick="showPage('budget')">Budget</button>
-    <button class="nav-pill" onclick="showPage('career')">Real Life</button>
-    <button class="nav-pill" onclick="showPage('challenge')">Challenge</button>
+    <button class="nav-pill active" data-page="intro">Intro</button>
+    <button class="nav-pill" data-page="banking">Banking</button>
+    <button class="nav-pill" data-page="savings">Savings</button>
+    <button class="nav-pill" data-page="budget">Budget</button>
+    <button class="nav-pill" data-page="career">Real Life</button>
+    <button class="nav-pill" data-page="challenge">Challenge</button>
   </div>
 </nav>
 
@@ -384,7 +384,7 @@
       </div>
     </div>
     <div style="text-align:center; margin-top:1.5rem;">
-      <button class="tab active" style="font-size:15px; padding:10px 28px;" onclick="showPage('banking')">Start with banking →</button>
+      <button class="tab active" style="font-size:15px; padding:10px 28px;" data-page="banking">Start with banking →</button>
     </div>
   </div>
 
@@ -430,7 +430,7 @@
       </div>
     </div>
     <div style="text-align:center; margin-top:1.5rem;">
-      <button class="tab active" style="font-size:15px; padding:10px 28px;" onclick="showPage('savings')">See the savings math →</button>
+      <button class="tab active" style="font-size:15px; padding:10px 28px;" data-page="savings">See the savings math →</button>
     </div>
   </div>
 
@@ -444,21 +444,21 @@
       <p style="font-size:15px; color:var(--text-muted); margin-bottom:1.5rem;">You can't live paycheck to paycheck. It's unhealthy for your mind and your body. Start now — even small. Here's what the math looks like.</p>
 
       <div class="tabs">
-        <button class="tab active" onclick="switchSavings('weekly', this)">Saving weekly</button>
-        <button class="tab" onclick="switchSavings('compound', this)">Compound interest</button>
-        <button class="tab" onclick="switchSavings('compare', this)">Save vs. don't save</button>
+        <button class="tab active" data-savings="weekly">Saving weekly</button>
+        <button class="tab" data-savings="compound">Compound interest</button>
+        <button class="tab" data-savings="compare">Save vs. don't save</button>
       </div>
 
       <div class="chart-panel">
         <div id="sv-weekly" class="hidden-panel active">
           <div class="slider-row">
             <span class="slider-label">Save per week</span>
-            <input type="range" min="5" max="150" value="20" step="5" id="wk-amt" oninput="updateWeekly()">
+            <input type="range" min="5" max="150" value="20" step="5" id="wk-amt">
             <span class="slider-val" id="wk-amt-out">$20</span>
           </div>
           <div class="slider-row">
             <span class="slider-label">Over how many years</span>
-            <input type="range" min="1" max="5" value="2" step="1" id="wk-yrs" oninput="updateWeekly()">
+            <input type="range" min="1" max="5" value="2" step="1" id="wk-yrs">
             <span class="slider-val" id="wk-yrs-out">2 years</span>
           </div>
           <div style="margin: 1rem 0 0.5rem;">
@@ -472,12 +472,12 @@
         <div id="sv-compound" class="hidden-panel">
           <div class="slider-row">
             <span class="slider-label">Starting deposit</span>
-            <input type="range" min="50" max="2000" value="500" step="50" id="cp-start" oninput="updateCompound()">
+            <input type="range" min="50" max="2000" value="500" step="50" id="cp-start">
             <span class="slider-val" id="cp-start-out">$500</span>
           </div>
           <div class="slider-row">
             <span class="slider-label">Interest rate (APY)</span>
-            <input type="range" min="1" max="10" value="4" step="1" id="cp-rate" oninput="updateCompound()">
+            <input type="range" min="1" max="10" value="4" step="1" id="cp-rate">
             <span class="slider-val" id="cp-rate-out">4%</span>
           </div>
           <div style="margin: 1rem 0 0.5rem;">
@@ -494,12 +494,12 @@
         <div id="sv-compare" class="hidden-panel">
           <div class="slider-row">
             <span class="slider-label">Monthly take-home</span>
-            <input type="range" min="400" max="3000" value="900" step="50" id="cmp-inc" oninput="updateCompare()">
+            <input type="range" min="400" max="3000" value="900" step="50" id="cmp-inc">
             <span class="slider-val" id="cmp-inc-out">$900</span>
           </div>
           <div class="slider-row">
             <span class="slider-label">Save per month</span>
-            <input type="range" min="10" max="500" value="90" step="10" id="cmp-save" oninput="updateCompare()">
+            <input type="range" min="10" max="500" value="90" step="10" id="cmp-save">
             <span class="slider-val" id="cmp-save-out">$90</span>
           </div>
           <div class="metrics">
@@ -516,7 +516,7 @@
       </div>
     </div>
     <div style="text-align:center; margin-top:1.5rem;">
-      <button class="tab active" style="font-size:15px; padding:10px 28px;" onclick="showPage('budget')">Try the budget builder →</button>
+      <button class="tab active" style="font-size:15px; padding:10px 28px;" data-page="budget">Try the budget builder →</button>
     </div>
   </div>
 
@@ -532,7 +532,7 @@
       <div style="margin-bottom:1rem;">
         <div class="slider-row">
           <span class="slider-label" style="min-width:160px;">Monthly take-home pay</span>
-          <input type="range" min="200" max="3000" value="800" step="50" id="income-slider" oninput="updateBudget()">
+          <input type="range" min="200" max="3000" value="800" step="50" id="income-slider">
           <span class="slider-val" id="income-out">$800</span>
         </div>
       </div>
@@ -540,22 +540,22 @@
       <div class="budget-grid">
         <div class="budget-category">
           <h4>Needs</h4>
-          <div class="budget-row"><label>Food / groceries</label><input type="number" id="b-food" value="120" min="0" oninput="updateBudget()"></div>
-          <div class="budget-row"><label>Transportation</label><input type="number" id="b-transport" value="80" min="0" oninput="updateBudget()"></div>
-          <div class="budget-row"><label>Phone bill</label><input type="number" id="b-phone" value="50" min="0" oninput="updateBudget()"></div>
-          <div class="budget-row"><label>Other needs</label><input type="number" id="b-other-needs" value="40" min="0" oninput="updateBudget()"></div>
+          <div class="budget-row"><label>Food / groceries</label><input type="number" id="b-food" value="120" min="0"></div>
+          <div class="budget-row"><label>Transportation</label><input type="number" id="b-transport" value="80" min="0"></div>
+          <div class="budget-row"><label>Phone bill</label><input type="number" id="b-phone" value="50" min="0"></div>
+          <div class="budget-row"><label>Other needs</label><input type="number" id="b-other-needs" value="40" min="0"></div>
         </div>
         <div class="budget-category">
           <h4>Wants</h4>
-          <div class="budget-row"><label>Eating out / fast food</label><input type="number" id="b-eating" value="60" min="0" oninput="updateBudget()"></div>
-          <div class="budget-row"><label>Shopping / clothes</label><input type="number" id="b-shopping" value="50" min="0" oninput="updateBudget()"></div>
-          <div class="budget-row"><label>Entertainment</label><input type="number" id="b-ent" value="30" min="0" oninput="updateBudget()"></div>
-          <div class="budget-row"><label>Other wants</label><input type="number" id="b-other-wants" value="30" min="0" oninput="updateBudget()"></div>
+          <div class="budget-row"><label>Eating out / fast food</label><input type="number" id="b-eating" value="60" min="0"></div>
+          <div class="budget-row"><label>Shopping / clothes</label><input type="number" id="b-shopping" value="50" min="0"></div>
+          <div class="budget-row"><label>Entertainment</label><input type="number" id="b-ent" value="30" min="0"></div>
+          <div class="budget-row"><label>Other wants</label><input type="number" id="b-other-wants" value="30" min="0"></div>
         </div>
         <div class="budget-category">
           <h4>Savings</h4>
-          <div class="budget-row"><label>Savings goal</label><input type="number" id="b-savings" value="80" min="0" oninput="updateBudget()"></div>
-          <div class="budget-row"><label>Emergency fund</label><input type="number" id="b-emergency" value="20" min="0" oninput="updateBudget()"></div>
+          <div class="budget-row"><label>Savings goal</label><input type="number" id="b-savings" value="80" min="0"></div>
+          <div class="budget-row"><label>Emergency fund</label><input type="number" id="b-emergency" value="20" min="0"></div>
         </div>
         <div class="budget-category">
           <h4>Quick math</h4>
@@ -586,11 +586,11 @@
           <div style="font-size:15px; font-weight:600; color:var(--teal);">Save your budget snapshot</div>
           <div style="font-size:13px; color:var(--teal); opacity:0.8; margin-top:2px;">Downloads a PDF with your numbers filled in.</div>
         </div>
-        <button onclick="downloadBudgetPDF()" style="background:var(--teal); color:white; border:none; border-radius:var(--radius-sm); padding:10px 22px; font-size:14px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif;">Download my budget</button>
+        <button id="download-btn" style="background:var(--teal); color:white; border:none; border-radius:var(--radius-sm); padding:10px 22px; font-size:14px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif;">Download my budget</button>
       </div>
     </div>
     <div style="text-align:center; margin-top:1.5rem;">
-      <button class="tab active" style="font-size:15px; padding:10px 28px;" onclick="showPage('career')">See real life costs →</button>
+      <button class="tab active" style="font-size:15px; padding:10px 28px;" data-page="career">See real life costs →</button>
     </div>
   </div>
 
@@ -632,7 +632,7 @@
       </div>
     </div>
     <div style="text-align:center; margin-top:1.5rem;">
-      <button class="tab active" style="font-size:15px; padding:10px 28px;" onclick="showPage('challenge')">Your take-home challenge →</button>
+      <button class="tab active" style="font-size:15px; padding:10px 28px;" data-page="challenge">Your take-home challenge →</button>
     </div>
   </div>
 
@@ -681,7 +681,7 @@ function showPage(id) {
   document.querySelectorAll('.nav-pill').forEach(b => b.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
   document.querySelectorAll('.nav-pill').forEach(b => {
-    if(b.getAttribute('onclick').includes("'"+id+"'")) b.classList.add('active');
+    if(b.dataset.page === id) b.classList.add('active');
   });
   if(id === 'savings') { setTimeout(updateWeekly, 50); }
   if(id === 'budget') { setTimeout(updateBudget, 50); }
@@ -874,6 +874,37 @@ buildCareerGrid();
 updateWeekly();
 updateBudget();
 
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('[data-page]').forEach(btn => {
+    btn.addEventListener('click', () => showPage(btn.dataset.page));
+  });
+
+  document.querySelectorAll('[data-savings]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('[data-savings]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      ['weekly','compound','compare'].forEach(t => document.getElementById('sv-'+t).classList.remove('active'));
+      document.getElementById('sv-'+btn.dataset.savings).classList.add('active');
+      setTimeout(() => {
+        if(btn.dataset.savings==='weekly') updateWeekly();
+        if(btn.dataset.savings==='compound') updateCompound();
+        if(btn.dataset.savings==='compare') updateCompare();
+      }, 50);
+    });
+  });
+
+  const dlBtn = document.getElementById('download-btn');
+  if(dlBtn) dlBtn.addEventListener('click', downloadBudgetPDF);
+
+  ['wk-amt','wk-yrs'].forEach(id => { const el = document.getElementById(id); if(el) el.addEventListener('input', updateWeekly); });
+  ['cp-start','cp-rate'].forEach(id => { const el = document.getElementById(id); if(el) el.addEventListener('input', updateCompound); });
+  ['cmp-inc','cmp-save'].forEach(id => { const el = document.getElementById(id); if(el) el.addEventListener('input', updateCompare); });
+  const incSlider = document.getElementById('income-slider'); if(incSlider) incSlider.addEventListener('input', updateBudget);
+  ['b-food','b-transport','b-phone','b-other-needs','b-eating','b-shopping','b-ent','b-other-wants','b-savings','b-emergency'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.addEventListener('input', updateBudget);
+  });
+});
+
 function downloadBudgetPDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ unit: 'pt', format: 'letter' });
@@ -898,16 +929,10 @@ function downloadBudgetPDF() {
   const left = income-total;
   const dti = income > 0 ? Math.round((total/income)*100) : 0;
 
-  const teal = [15, 110, 86];
-  const tealLight = [225, 245, 238];
-  const gray = [90, 90, 90];
-  const lightGray = [248, 247, 244];
-  const black = [26, 26, 26];
-
   const W = 612, M = 48;
   let y = 48;
 
-  doc.setFillColor(...teal);
+  doc.setFillColor(15, 110, 86);
   doc.rect(0, 0, W, 90, 'F');
   doc.setTextColor(255,255,255);
   doc.setFontSize(22);
@@ -915,15 +940,15 @@ function downloadBudgetPDF() {
   doc.text('My Budget Snapshot', M, 38);
   doc.setFontSize(11);
   doc.setFont('helvetica','normal');
-  doc.text('Together We Will Figure It Out  ·  Week 1: Your Money, Your Move', M, 58);
+  doc.text('Together We Will Figure It Out  -  Week 1: Your Money, Your Move', M, 58);
   doc.setFontSize(10);
   doc.text('Generated ' + new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}), M, 75);
 
   y = 110;
 
-  doc.setFillColor(...tealLight);
+  doc.setFillColor(225, 245, 238);
   doc.roundedRect(M, y, W-M*2, 52, 6, 6, 'F');
-  doc.setTextColor(...teal);
+  doc.setTextColor(15, 110, 86);
   doc.setFontSize(11);
   doc.setFont('helvetica','normal');
   doc.text('Monthly take-home pay', M+16, y+20);
@@ -933,8 +958,8 @@ function downloadBudgetPDF() {
 
   y += 68;
 
-  function drawSection(title, items, color) {
-    doc.setFillColor(...color);
+  function drawSection(title, items, r, g, b) {
+    doc.setFillColor(r, g, b);
     doc.rect(M, y, W-M*2, 24, 'F');
     doc.setTextColor(255,255,255);
     doc.setFontSize(10);
@@ -942,10 +967,11 @@ function downloadBudgetPDF() {
     doc.text(title.toUpperCase(), M+12, y+15);
     y += 24;
 
-    items.forEach(([label, val], i) => {
-      doc.setFillColor(i%2===0 ? 255 : ...lightGray);
+    items.forEach(function(item, i) {
+      var label = item[0], val = item[1];
+      if(i%2===0) { doc.setFillColor(255,255,255); } else { doc.setFillColor(248,247,244); }
       doc.rect(M, y, W-M*2, 22, 'F');
-      doc.setTextColor(...black);
+      doc.setTextColor(26, 26, 26);
       doc.setFontSize(10);
       doc.setFont('helvetica','normal');
       doc.text(label, M+12, y+14);
@@ -954,8 +980,8 @@ function downloadBudgetPDF() {
       y += 22;
     });
 
-    const sectionTotal = items.reduce((s,[,v])=>s+v,0);
-    doc.setFillColor(...color);
+    var sectionTotal = items.reduce(function(s, item){ return s + item[1]; }, 0);
+    doc.setFillColor(r, g, b);
     doc.rect(M, y, W-M*2, 22, 'F');
     doc.setTextColor(255,255,255);
     doc.setFontSize(10);
@@ -972,49 +998,49 @@ function downloadBudgetPDF() {
     ['Transportation', fields['Transportation']],
     ['Phone bill', fields['Phone bill']],
     ['Other needs', fields['Other needs']],
-  ], [15,110,86]);
+  ], 15, 110, 86);
 
   drawSection('Wants', [
     ['Eating out / fast food', fields['Eating out / fast food']],
     ['Shopping / clothes', fields['Shopping / clothes']],
     ['Entertainment', fields['Entertainment']],
     ['Other wants', fields['Other wants']],
-  ], [83,74,183]);
+  ], 83, 74, 183);
 
   drawSection('Savings', [
     ['Savings goal', fields['Savings goal']],
     ['Emergency fund', fields['Emergency fund']],
-  ], [186,117,23]);
+  ], 186, 117, 23);
 
   y += 8;
-  doc.setFillColor(...(left >= 0 ? teal : [216,90,48]));
+  if(left >= 0) { doc.setFillColor(15, 110, 86); } else { doc.setFillColor(216, 90, 48); }
   doc.roundedRect(M, y, W-M*2, 70, 6, 6, 'F');
   doc.setTextColor(255,255,255);
   doc.setFontSize(11);
   doc.setFont('helvetica','normal');
-  doc.text('Total expenses: ' + fmt(total) + '   ·   DTI: ' + dti + '%  (goal: under 36%)', M+16, y+20);
+  doc.text('Total expenses: ' + fmt(total) + '   DTI: ' + dti + '%  (goal: under 36%)', M+16, y+20);
   doc.setFontSize(18);
   doc.setFont('helvetica','bold');
   doc.text(left >= 0 ? fmt(left) + ' left over each month' : fmt(Math.abs(left)) + ' over budget', M+16, y+48);
   doc.setFontSize(10);
   doc.setFont('helvetica','normal');
-  doc.text(left >= 0 ? 'Great start. Now protect this margin.' : 'Review your wants column — something can give.', M+16, y+62);
+  doc.text(left >= 0 ? 'Great start. Now protect this margin.' : 'Review your wants column -- something can give.', M+16, y+62);
 
   y += 90;
-  doc.setFillColor(...lightGray);
+  doc.setFillColor(248, 247, 244);
   doc.roundedRect(M, y, W-M*2, 80, 6, 6, 'F');
-  doc.setTextColor(...teal);
+  doc.setTextColor(15, 110, 86);
   doc.setFontSize(11);
   doc.setFont('helvetica','bold');
   doc.text('Your 30-day challenge', M+16, y+20);
-  doc.setTextColor(...gray);
+  doc.setTextColor(90, 90, 90);
   doc.setFontSize(10);
   doc.setFont('helvetica','normal');
   doc.text('Track every dollar you spend this month. Mark each one W (want) or N (need).', M+16, y+36, { maxWidth: W-M*2-32 });
   doc.text('Bring your totals back to the next session. Pick one want per week to cut.', M+16, y+52, { maxWidth: W-M*2-32 });
-  doc.setTextColor(...teal);
+  doc.setTextColor(15, 110, 86);
   doc.setFont('helvetica','bolditalic');
-  doc.text("You're never alone. — TWWFIO", M+16, y+70);
+  doc.text("You're never alone. -- TWWFIO", M+16, y+70);
 
   doc.save('my-budget-week1-twwfio.pdf');
 }
