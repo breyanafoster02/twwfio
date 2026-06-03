@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TWWFIO — Week 1: Your Money, Your Move</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --teal: #0F6E56;
+    --teal-light: #E1F5EE;
+    --teal-mid: #1D9E75;
+    --purple: #534AB7;
+    --purple-light: #EEEDFE;
+    --amber: #BA7517;
+    --amber-light: #FAEEDA;
+    --coral: #D85A30;
+    --coral-light: #FAECE7;
+    --text: #1a1a1a;
+    --text-muted: #5a5a5a;
+    --text-hint: #999;
+    --border: rgba(0,0,0,0.09);
+    --surface: #f8f7f4;
+    --white: #ffffff;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--surface);
+    color: var(--text);
+    font-size: 16px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .nav {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .nav-logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    color: var(--teal);
+    letter-spacing: -0.3px;
+  }
+
+  .nav-logo span { color: var(--text-muted); font-size: 13px; font-family: 'DM Sans', sans-serif; font-weight: 400; margin-left: 10px; }
+
+  .nav-pills { display: flex; gap: 6px; }
+  .nav-pill {
+    font-size: 13px;
+    padding: 5px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .nav-pill.active, .nav-pill:hover { background: var(--teal); color: white; border-color: var(--teal); }
+
+  .hero {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 3rem 2rem 2.5rem;
+    text-align: center;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--teal);
+    background: var(--teal-light);
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(32px, 5vw, 52px);
+    color: var(--text);
+    line-height: 1.1;
+    letter-spacing: -1px;
+    margin-bottom: 12px;
+  }
+
+  .hero h1 em { font-style: italic; color: var(--teal); }
+
+  .hero-sub {
+    font-size: 16px;
+    color: var(--text-muted);
+    max-width: 520px;
+    margin: 0 auto;
+    font-weight: 300;
+  }
+
+  .main { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  .section { margin-bottom: 3rem; }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 1.25rem;
+  }
+
+  .section-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 36px;
+    color: var(--teal-light);
+    line-height: 1;
+    min-width: 36px;
+  }
+
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 24px;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+
+  .card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 12px;
+  }
+
+  .card-teal { border-left: 3px solid var(--teal-mid); border-radius: 0 var(--radius) var(--radius) 0; }
+  .card-purple { border-left: 3px solid var(--purple); border-radius: 0 var(--radius) var(--radius) 0; }
+  .card-amber { border-left: 3px solid var(--amber); border-radius: 0 var(--radius) var(--radius) 0; }
+
+  .card h3 { font-size: 15px; font-weight: 600; margin-bottom: 6px; color: var(--text); }
+  .card p { font-size: 14px; color: var(--text-muted); line-height: 1.65; }
+
+  .quote-block {
+    background: var(--teal-light);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.5rem;
+    margin: 1rem 0;
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    color: var(--teal);
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  .tabs { display: flex; gap: 8px; margin-bottom: 1.25rem; flex-wrap: wrap; }
+  .tab {
+    font-size: 13px;
+    font-weight: 500;
+    padding: 7px 18px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--white);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .tab.active { background: var(--teal); color: white; border-color: var(--teal); }
+  .tab:hover:not(.active) { border-color: var(--teal); color: var(--teal); }
+
+  .chart-panel { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; }
+
+  .slider-row { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+  .slider-label { font-size: 13px; color: var(--text-muted); min-width: 130px; }
+  .slider-val { font-size: 14px; font-weight: 600; color: var(--teal); min-width: 70px; text-align: right; }
+
+  input[type=range] {
+    flex: 1;
+    height: 4px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: #e0e0e0;
+    border-radius: 2px;
+    outline: none;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: var(--teal);
+    cursor: pointer;
+  }
+
+  .big-number { font-family: 'DM Serif Display', serif; font-size: 38px; color: var(--teal); line-height: 1; }
+  .big-label { font-size: 13px; color: var(--text-hint); margin-top: 3px; }
+
+  .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 1rem 0; }
+  .metric { background: var(--surface); border-radius: var(--radius-sm); padding: 1rem; text-align: center; }
+  .metric-val { font-family: 'DM Serif Display', serif; font-size: 26px; color: var(--teal); display: block; }
+  .metric-lbl { font-size: 12px; color: var(--text-hint); margin-top: 2px; }
+
+  .legend { display: flex; gap: 18px; flex-wrap: wrap; font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
+  .ldot { width: 10px; height: 10px; border-radius: 2px; display: inline-block; margin-right: 5px; vertical-align: middle; }
+
+  .budget-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 600px) { .budget-grid { grid-template-columns: 1fr; } }
+
+  .budget-category { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; }
+  .budget-category h4 { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-hint); margin-bottom: 10px; }
+
+  .budget-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .budget-row label { font-size: 13px; color: var(--text-muted); flex: 1; }
+  .budget-row input[type=number] {
+    width: 90px;
+    padding: 6px 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    background: var(--surface);
+    text-align: right;
+    outline: none;
+  }
+  .budget-row input[type=number]:focus { border-color: var(--teal); }
+
+  .budget-summary {
+    background: var(--teal);
+    color: white;
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-top: 1rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    text-align: center;
+  }
+  .bs-val { font-family: 'DM Serif Display', serif; font-size: 28px; display: block; }
+  .bs-lbl { font-size: 12px; opacity: 0.8; margin-top: 2px; }
+  .bs-danger .bs-val { color: #FFCDD2; }
+
+  .career-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; margin-bottom: 1.25rem; }
+  .career-btn {
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--white);
+    font-size: 13px;
+    color: var(--text-muted);
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s;
+    font-family: 'DM Sans', sans-serif;
+    line-height: 1.3;
+  }
+  .career-btn .job-title { font-weight: 600; color: var(--text); font-size: 13px; }
+  .career-btn .job-sal { font-size: 11px; color: var(--text-hint); margin-top: 2px; }
+  .career-btn.selected { background: var(--teal-light); border-color: var(--teal-mid); }
+  .career-btn.selected .job-title { color: var(--teal); }
+  .career-btn:hover:not(.selected) { border-color: var(--teal-mid); }
+
+  .life-budget { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; }
+  .life-budget h4 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+  .life-budget .sub { font-size: 13px; color: var(--text-muted); margin-bottom: 1.25rem; }
+
+  .life-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .life-row-label { font-size: 14px; color: var(--text); flex: 1; }
+  .life-row-cost { font-size: 14px; font-weight: 600; color: var(--text); min-width: 80px; text-align: right; }
+  .life-bar-wrap { flex: 1; height: 6px; background: #eee; border-radius: 3px; max-width: 200px; }
+  .life-bar { height: 6px; background: var(--teal-mid); border-radius: 3px; transition: width 0.3s; }
+  .life-bar.danger { background: var(--coral); }
+
+  .life-result { margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid var(--border); }
+  .life-result-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+  .life-result-label { font-size: 14px; color: var(--text-muted); }
+  .life-result-val { font-family: 'DM Serif Display', serif; font-size: 22px; }
+  .surplus { color: var(--teal); }
+  .deficit { color: var(--coral); }
+
+  .activity-steps { counter-reset: steps; }
+  .activity-step { display: flex; gap: 14px; margin-bottom: 14px; align-items: flex-start; }
+  .step-num { width: 28px; height: 28px; border-radius: 50%; background: var(--teal); color: white; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .step-text { font-size: 14px; color: var(--text-muted); line-height: 1.65; padding-top: 3px; }
+
+  .prompt-box {
+    background: var(--purple-light);
+    border-radius: var(--radius-sm);
+    padding: 0.85rem 1rem;
+    font-size: 14px;
+    color: var(--purple);
+    font-style: italic;
+    margin-bottom: 8px;
+    line-height: 1.5;
+  }
+
+  .challenge-card {
+    background: var(--teal);
+    color: white;
+    border-radius: var(--radius);
+    padding: 2rem;
+    margin-top: 1rem;
+  }
+  .challenge-card h3 { font-family: 'DM Serif Display', serif; font-size: 22px; margin-bottom: 8px; font-weight: 400; }
+  .challenge-card p { font-size: 14px; opacity: 0.9; line-height: 1.65; margin-bottom: 1rem; }
+  .challenge-card ul { padding-left: 1.25rem; font-size: 14px; opacity: 0.9; line-height: 2; }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
+
+  .page { display: none; }
+  .page.active { display: block; }
+
+  .chart-wrap { position: relative; width: 100%; height: 240px; margin-top: 1rem; }
+
+  .hidden-panel { display: none; }
+  .hidden-panel.active { display: block; }
+
+  @media (max-width: 640px) {
+    .metrics { grid-template-columns: 1fr 1fr; }
+    .budget-summary { grid-template-columns: 1fr; }
+    .nav-pills { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-logo">TWWFIO <span>Week 1 — Your Money, Your Move</span></div>
+  <div class="nav-pills">
+    <button class="nav-pill active" onclick="showPage('intro')">Intro</button>
+    <button class="nav-pill" onclick="showPage('banking')">Banking</button>
+    <button class="nav-pill" onclick="showPage('savings')">Savings</button>
+    <button class="nav-pill" onclick="showPage('budget')">Budget</button>
+    <button class="nav-pill" onclick="showPage('career')">Real Life</button>
+    <button class="nav-pill" onclick="showPage('challenge')">Challenge</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">Together We Will Figure It Out</div>
+  <h1>Your money,<br><em>your move.</em></h1>
+  <p class="hero-sub">Week 1 — Banking basics, the power of saving, and what your life actually costs.</p>
+</div>
+
+<div class="main">
+
+  <!-- INTRO PAGE -->
+  <div id="page-intro" class="page active">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">01</div>
+        <div class="section-title">Why we're here</div>
+      </div>
+      <div class="quote-block">"I vowed that no child I came across would ever feel alone or have to do it on their own."</div>
+      <div class="card card-teal">
+        <h3>What this program is</h3>
+        <p>TWWFIO mentors teens and young adults through the real stuff — not the textbook stuff. Life skills, financial foundations, self-awareness. Everything your school probably didn't teach you but everything you actually need.</p>
+      </div>
+      <div class="card card-teal">
+        <h3>What it's not</h3>
+        <p>A lecture. A class. A place where you have to pretend you already know things. Everything shared here is real, earned the hard way, and passed to you so you don't have to learn it the same way.</p>
+      </div>
+      <div class="card card-purple">
+        <h3>The "WE" is intentional</h3>
+        <p>It's not "I will figure it out for you." It says WE — because your effort is 100% required. Life is not easy, life is not fair. But you don't have to do it alone.</p>
+      </div>
+      <div class="card card-teal" style="margin-top:1rem;">
+        <h3>Topics we'll cover over time</h3>
+        <p>Financial literacy · Personal advocacy · Time management · Career exploration · Emotional intelligence · Credit · Investing · How to move in business</p>
+      </div>
+    </div>
+    <div style="text-align:center; margin-top:1.5rem;">
+      <button class="tab active" style="font-size:15px; padding:10px 28px;" onclick="showPage('banking')">Start with banking →</button>
+    </div>
+  </div>
+
+  <!-- BANKING PAGE -->
+  <div id="page-banking" class="page">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">02</div>
+        <div class="section-title">How banking actually works</div>
+      </div>
+      <div class="quote-block">"Do you actually know what happens to your money when it goes into the bank?"</div>
+      <div class="card card-teal">
+        <h3>What a bank does with your money</h3>
+        <p>Banks take your deposits and lend them out — mortgages, car loans, personal loans. There is no bank that houses the physical cash of everyone. That's why your money needs protection. At a bank, each account is federally insured by the FDIC up to $250,000. Credit unions are insured by the NCUA.</p>
+      </div>
+      <div style="margin-top:1.5rem; margin-bottom:0.75rem; font-size:14px; font-weight:600; color:var(--text-hint); text-transform:uppercase; letter-spacing:0.05em;">Types of accounts</div>
+      <div class="card card-teal">
+        <h3>Checking account</h3>
+        <p>Everyday spending. This is where most people keep their money and what's linked to your debit card. Easy access, low interest.</p>
+      </div>
+      <div class="card card-teal">
+        <h3>Savings account</h3>
+        <p>For saving — the name says it. Higher interest than checking. Warning: if your savings is connected to the same app as your checking, it's too easy to raid it. Keep them separate if you can.</p>
+      </div>
+      <div class="card card-amber">
+        <h3>High-yield savings account (HYSA)</h3>
+        <p>A savings account with a much higher interest rate — sometimes 15–20x a regular savings account. The tradeoff: you usually can't access it as easily, which is actually the point. Your money grows and you're less tempted to touch it.</p>
+      </div>
+      <div class="card">
+        <h3>Money market account</h3>
+        <p>High interest, but usually has a minimum balance requirement (often $2,500+). Tiered rates based on how much you keep in it.</p>
+      </div>
+      <div class="card">
+        <h3>Certificate of deposit (CD)</h3>
+        <p>You lock your money in for a set period (the "maturity date") and earn a higher rate for leaving it alone. You can't touch it without a penalty until the maturity date. Good for money you know you won't need.</p>
+      </div>
+      <div style="margin-top:1.5rem; margin-bottom:0.75rem; font-size:14px; font-weight:600; color:var(--text-hint); text-transform:uppercase; letter-spacing:0.05em;">Ways to deposit money</div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:10px;">
+        <div class="card" style="margin:0;"><h3>In person</h3><p style="font-size:13px;">Walk into the bank with cash or a check.</p></div>
+        <div class="card" style="margin:0;"><h3>ATM</h3><p style="font-size:13px;">Deposit cash or checks at an ATM.</p></div>
+        <div class="card" style="margin:0;"><h3>Mobile scan</h3><p style="font-size:13px;">Photograph a check on your bank's app.</p></div>
+        <div class="card" style="margin:0;"><h3>Direct deposit</h3><p style="font-size:13px;">Your employer sends your paycheck straight in.</p></div>
+      </div>
+    </div>
+    <div style="text-align:center; margin-top:1.5rem;">
+      <button class="tab active" style="font-size:15px; padding:10px 28px;" onclick="showPage('savings')">See the savings math →</button>
+    </div>
+  </div>
+
+  <!-- SAVINGS PAGE -->
+  <div id="page-savings" class="page">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">03</div>
+        <div class="section-title">What saving actually does</div>
+      </div>
+      <p style="font-size:15px; color:var(--text-muted); margin-bottom:1.5rem;">You can't live paycheck to paycheck. It's unhealthy for your mind and your body. Start now — even small. Here's what the math looks like.</p>
+
+      <div class="tabs">
+        <button class="tab active" onclick="switchSavings('weekly', this)">Saving weekly</button>
+        <button class="tab" onclick="switchSavings('compound', this)">Compound interest</button>
+        <button class="tab" onclick="switchSavings('compare', this)">Save vs. don't save</button>
+      </div>
+
+      <div class="chart-panel">
+        <div id="sv-weekly" class="hidden-panel active">
+          <div class="slider-row">
+            <span class="slider-label">Save per week</span>
+            <input type="range" min="5" max="150" value="20" step="5" id="wk-amt" oninput="updateWeekly()">
+            <span class="slider-val" id="wk-amt-out">$20</span>
+          </div>
+          <div class="slider-row">
+            <span class="slider-label">Over how many years</span>
+            <input type="range" min="1" max="5" value="2" step="1" id="wk-yrs" oninput="updateWeekly()">
+            <span class="slider-val" id="wk-yrs-out">2 years</span>
+          </div>
+          <div style="margin: 1rem 0 0.5rem;">
+            <div class="big-number" id="wk-total">$2,080</div>
+            <div class="big-label">total saved</div>
+          </div>
+          <div class="legend"><span><span class="ldot" style="background:#1D9E75;"></span>Cumulative savings</span></div>
+          <div class="chart-wrap"><canvas id="weeklyChart" role="img" aria-label="Bar chart showing cumulative weekly savings over time">Cumulative savings growth.</canvas></div>
+        </div>
+
+        <div id="sv-compound" class="hidden-panel">
+          <div class="slider-row">
+            <span class="slider-label">Starting deposit</span>
+            <input type="range" min="50" max="2000" value="500" step="50" id="cp-start" oninput="updateCompound()">
+            <span class="slider-val" id="cp-start-out">$500</span>
+          </div>
+          <div class="slider-row">
+            <span class="slider-label">Interest rate (APY)</span>
+            <input type="range" min="1" max="10" value="4" step="1" id="cp-rate" oninput="updateCompound()">
+            <span class="slider-val" id="cp-rate-out">4%</span>
+          </div>
+          <div style="margin: 1rem 0 0.5rem;">
+            <div class="big-number" id="cp-total">$608</div>
+            <div class="big-label">after 5 years — money you made doing nothing</div>
+          </div>
+          <div class="legend">
+            <span><span class="ldot" style="background:#1D9E75;"></span>With interest</span>
+            <span><span class="ldot" style="background:#D3D1C7; border:1px solid #aaa;"></span>No growth</span>
+          </div>
+          <div class="chart-wrap"><canvas id="compoundChart" role="img" aria-label="Line chart comparing compound interest growth versus no growth">Compound interest comparison.</canvas></div>
+        </div>
+
+        <div id="sv-compare" class="hidden-panel">
+          <div class="slider-row">
+            <span class="slider-label">Monthly take-home</span>
+            <input type="range" min="400" max="3000" value="900" step="50" id="cmp-inc" oninput="updateCompare()">
+            <span class="slider-val" id="cmp-inc-out">$900</span>
+          </div>
+          <div class="slider-row">
+            <span class="slider-label">Save per month</span>
+            <input type="range" min="10" max="500" value="90" step="10" id="cmp-save" oninput="updateCompare()">
+            <span class="slider-val" id="cmp-save-out">$90</span>
+          </div>
+          <div class="metrics">
+            <div class="metric"><span class="metric-val" id="cmp-1yr">$1,080</span><span class="metric-lbl">saved — year 1</span></div>
+            <div class="metric"><span class="metric-val" id="cmp-3yr">$3,240</span><span class="metric-lbl">saved — year 3</span></div>
+            <div class="metric"><span class="metric-val" id="cmp-pct">10%</span><span class="metric-lbl">of income saved</span></div>
+          </div>
+          <div class="legend">
+            <span><span class="ldot" style="background:#1D9E75;"></span>Saver</span>
+            <span><span class="ldot" style="background:#D85A30;"></span>Non-saver</span>
+          </div>
+          <div class="chart-wrap"><canvas id="compareChart" role="img" aria-label="Grouped bar chart comparing saver versus non-saver over 3 years">Saver vs non-saver over 3 years.</canvas></div>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center; margin-top:1.5rem;">
+      <button class="tab active" style="font-size:15px; padding:10px 28px;" onclick="showPage('budget')">Try the budget builder →</button>
+    </div>
+  </div>
+
+  <!-- BUDGET PAGE -->
+  <div id="page-budget" class="page">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">04</div>
+        <div class="section-title">Build your budget snapshot</div>
+      </div>
+      <p style="font-size:15px; color:var(--text-muted); margin-bottom:1.5rem;">Write out what you actually spend. No judgment — just honesty. The goal is to see where your money goes before you decide where you want it to go.</p>
+
+      <div style="margin-bottom:1rem;">
+        <div class="slider-row">
+          <span class="slider-label" style="min-width:160px;">Monthly take-home pay</span>
+          <input type="range" min="200" max="3000" value="800" step="50" id="income-slider" oninput="updateBudget()">
+          <span class="slider-val" id="income-out">$800</span>
+        </div>
+      </div>
+
+      <div class="budget-grid">
+        <div class="budget-category">
+          <h4>Needs</h4>
+          <div class="budget-row"><label>Food / groceries</label><input type="number" id="b-food" value="120" min="0" oninput="updateBudget()"></div>
+          <div class="budget-row"><label>Transportation</label><input type="number" id="b-transport" value="80" min="0" oninput="updateBudget()"></div>
+          <div class="budget-row"><label>Phone bill</label><input type="number" id="b-phone" value="50" min="0" oninput="updateBudget()"></div>
+          <div class="budget-row"><label>Other needs</label><input type="number" id="b-other-needs" value="40" min="0" oninput="updateBudget()"></div>
+        </div>
+        <div class="budget-category">
+          <h4>Wants</h4>
+          <div class="budget-row"><label>Eating out / fast food</label><input type="number" id="b-eating" value="60" min="0" oninput="updateBudget()"></div>
+          <div class="budget-row"><label>Shopping / clothes</label><input type="number" id="b-shopping" value="50" min="0" oninput="updateBudget()"></div>
+          <div class="budget-row"><label>Entertainment</label><input type="number" id="b-ent" value="30" min="0" oninput="updateBudget()"></div>
+          <div class="budget-row"><label>Other wants</label><input type="number" id="b-other-wants" value="30" min="0" oninput="updateBudget()"></div>
+        </div>
+        <div class="budget-category">
+          <h4>Savings</h4>
+          <div class="budget-row"><label>Savings goal</label><input type="number" id="b-savings" value="80" min="0" oninput="updateBudget()"></div>
+          <div class="budget-row"><label>Emergency fund</label><input type="number" id="b-emergency" value="20" min="0" oninput="updateBudget()"></div>
+        </div>
+        <div class="budget-category">
+          <h4>Quick math</h4>
+          <div style="margin-top:6px;">
+            <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px;"><span style="color:var(--text-muted);">Total needs</span><span id="q-needs" style="font-weight:600;">$290</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px;"><span style="color:var(--text-muted);">Total wants</span><span id="q-wants" style="font-weight:600;">$170</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px;"><span style="color:var(--text-muted);">Total savings</span><span id="q-savings" style="font-weight:600;">$100</span></div>
+            <div style="border-top:1px solid var(--border);padding-top:8px;display:flex;justify-content:space-between;font-size:14px;"><span style="color:var(--text-muted);">Left over</span><span id="q-left" style="font-weight:700;color:var(--teal);">$240</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="budget-summary" id="budget-summary">
+        <div><span class="bs-val" id="sum-income">$800</span><span class="bs-lbl">take-home</span></div>
+        <div><span class="bs-val" id="sum-expenses">$560</span><span class="bs-lbl">total expenses</span></div>
+        <div id="sum-left-wrap"><span class="bs-val" id="sum-left">$240</span><span class="bs-lbl">left over</span></div>
+      </div>
+
+      <div style="margin-top:1.25rem;">
+        <div style="font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-hint);margin-bottom:10px;">Discussion prompts</div>
+        <div class="prompt-box">"If you pulled $10 from your wants column every week, what would you have in 6 months?"</div>
+        <div class="prompt-box">"What's one thing in your wants list you could honestly live without for 30 days?"</div>
+        <div class="prompt-box">"What does your DTI (debt-to-income ratio) look like? The goal is under 36%."</div>
+      </div>
+
+      <div style="margin-top:1.5rem; padding:1.25rem; background:var(--teal-light); border-radius:var(--radius); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+        <div>
+          <div style="font-size:15px; font-weight:600; color:var(--teal);">Save your budget snapshot</div>
+          <div style="font-size:13px; color:var(--teal); opacity:0.8; margin-top:2px;">Downloads a PDF with your numbers filled in.</div>
+        </div>
+        <button onclick="downloadBudgetPDF()" style="background:var(--teal); color:white; border:none; border-radius:var(--radius-sm); padding:10px 22px; font-size:14px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif;">Download my budget</button>
+      </div>
+    </div>
+    <div style="text-align:center; margin-top:1.5rem;">
+      <button class="tab active" style="font-size:15px; padding:10px 28px;" onclick="showPage('career')">See real life costs →</button>
+    </div>
+  </div>
+
+  <!-- CAREER / REAL LIFE PAGE -->
+  <div id="page-career" class="page">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">05</div>
+        <div class="section-title">What does your life actually cost?</div>
+      </div>
+      <p style="font-size:15px; color:var(--text-muted); margin-bottom:1.5rem;">Pick a career you're thinking about. We'll show you what that salary looks like after taxes — and what it actually covers in the DMV.</p>
+
+      <div class="career-grid" id="career-grid"></div>
+
+      <div id="life-budget-panel" class="life-budget" style="display:none;">
+        <h4 id="lb-title">Life as a Registered Nurse in DC/MD/VA</h4>
+        <p class="sub" id="lb-sub">Estimated monthly take-home after taxes: <strong id="lb-takehome">$4,100</strong></p>
+
+        <div id="lb-rows"></div>
+
+        <div class="life-result">
+          <div class="life-result-row">
+            <span class="life-result-label">Monthly take-home</span>
+            <span class="life-result-val" id="lr-income">$4,100</span>
+          </div>
+          <div class="life-result-row">
+            <span class="life-result-label">Total estimated expenses</span>
+            <span class="life-result-val" id="lr-expenses">$3,780</span>
+          </div>
+          <div class="life-result-row" style="border-top:1px solid var(--border);padding-top:10px;margin-top:4px;">
+            <span class="life-result-label" style="font-weight:600;">Left for savings / goals</span>
+            <span class="life-result-val surplus" id="lr-left">$320</span>
+          </div>
+        </div>
+
+        <div style="margin-top:1rem;padding:1rem;background:var(--teal-light);border-radius:var(--radius-sm);">
+          <p style="font-size:13px;color:var(--teal);line-height:1.65;" id="lb-insight">This is why your first job salary matters — but your spending habits matter more. A high salary with high lifestyle creep gets you nowhere.</p>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center; margin-top:1.5rem;">
+      <button class="tab active" style="font-size:15px; padding:10px 28px;" onclick="showPage('challenge')">Your take-home challenge →</button>
+    </div>
+  </div>
+
+  <!-- CHALLENGE PAGE -->
+  <div id="page-challenge" class="page">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">06</div>
+        <div class="section-title">Your challenge this month</div>
+      </div>
+      <div class="challenge-card">
+        <h3>30-day money tracker</h3>
+        <p>For the next 30 days, write down every dollar you spend. Phone notes, a notebook, whatever works. At the end of the month, total your wants vs. your needs. Bring it back next session.</p>
+        <ul>
+          <li>Track every purchase — no minimum, no maximum</li>
+          <li>Mark each one W (want) or N (need)</li>
+          <li>Pick one want per week to cut and move that money somewhere you can't easily touch it</li>
+          <li>Even $5 counts — the habit is the point</li>
+        </ul>
+      </div>
+      <div class="card card-purple" style="margin-top:1rem;">
+        <h3>Accountability partner</h3>
+        <p>Pair up before you leave today. You don't have to share your numbers — just check in once a week. One question: "Did you track this week?" That's it.</p>
+      </div>
+      <div class="card" style="margin-top:1rem;">
+        <h3>Remember this</h3>
+        <p style="font-size:15px; line-height:1.7; color:var(--text);">Every action has a reaction. You don't have to do this perfectly — you just have to start. You now have a mentor for life. Anything I know, I'll teach you. And you don't have to do any of it alone.</p>
+      </div>
+      <div style="margin-top:2rem;text-align:center;">
+        <div style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--teal);font-style:italic;margin-bottom:6px;">You're never alone.</div>
+        <div style="font-size:14px;color:var(--text-hint);">See you at the next session.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const pages = ['intro','banking','savings','budget','career','challenge'];
+let weeklyChart, compoundChart, compareChart;
+
+function showPage(id) {
+  pages.forEach(p => {
+    document.getElementById('page-'+p).classList.remove('active');
+  });
+  document.querySelectorAll('.nav-pill').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.nav-pill').forEach(b => {
+    if(b.getAttribute('onclick').includes("'"+id+"'")) b.classList.add('active');
+  });
+  if(id === 'savings') { setTimeout(updateWeekly, 50); }
+  if(id === 'budget') { setTimeout(updateBudget, 50); }
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function switchSavings(type, btn) {
+  document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  ['weekly','compound','compare'].forEach(t => {
+    document.getElementById('sv-'+t).classList.remove('active');
+  });
+  document.getElementById('sv-'+type).classList.add('active');
+  setTimeout(() => {
+    if(type==='weekly') updateWeekly();
+    if(type==='compound') updateCompound();
+    if(type==='compare') updateCompare();
+  }, 50);
+}
+
+function fmt(n) { return '$' + Math.round(n).toLocaleString(); }
+
+function updateWeekly() {
+  const amt = parseInt(document.getElementById('wk-amt').value);
+  const yrs = parseInt(document.getElementById('wk-yrs').value);
+  document.getElementById('wk-amt-out').textContent = fmt(amt);
+  document.getElementById('wk-yrs-out').textContent = yrs + (yrs===1?' year':' years');
+  const labels = [], data = [];
+  for(let m=1; m<=yrs*12; m++) { labels.push('Mo '+m); data.push(Math.round(amt*4.33*m)); }
+  document.getElementById('wk-total').textContent = fmt(amt*52*yrs);
+  if(weeklyChart) weeklyChart.destroy();
+  weeklyChart = new Chart(document.getElementById('weeklyChart'), {
+    type:'bar',
+    data:{ labels, datasets:[{ label:'Saved', data, backgroundColor:'#1D9E75', borderRadius:3 }] },
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false } },
+      scales:{ x:{ ticks:{ autoSkip:true, maxTicksLimit:8, font:{size:11} }, grid:{display:false} },
+               y:{ ticks:{ callback:v=>fmt(v), font:{size:11} }, grid:{color:'rgba(0,0,0,0.04)'} } } }
+  });
+}
+
+function updateCompound() {
+  const start = parseInt(document.getElementById('cp-start').value);
+  const rate = parseInt(document.getElementById('cp-rate').value)/100;
+  document.getElementById('cp-start-out').textContent = fmt(start);
+  document.getElementById('cp-rate-out').textContent = Math.round(rate*100)+'%';
+  const labels=[], withInt=[], flat=[];
+  for(let y=0;y<=5;y++) {
+    labels.push('Year '+y);
+    withInt.push(Math.round(start*Math.pow(1+rate,y)));
+    flat.push(start);
+  }
+  document.getElementById('cp-total').textContent = fmt(withInt[5]);
+  if(compoundChart) compoundChart.destroy();
+  compoundChart = new Chart(document.getElementById('compoundChart'), {
+    type:'line',
+    data:{ labels, datasets:[
+      { label:'With interest', data:withInt, borderColor:'#1D9E75', backgroundColor:'rgba(29,158,117,0.08)', fill:true, tension:0.3, pointRadius:5, pointBackgroundColor:'#1D9E75' },
+      { label:'No growth', data:flat, borderColor:'#B4B2A9', borderDash:[5,4], backgroundColor:'transparent', pointRadius:3, pointBackgroundColor:'#B4B2A9' }
+    ]},
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false } },
+      scales:{ x:{ ticks:{ font:{size:11} }, grid:{display:false} },
+               y:{ ticks:{ callback:v=>fmt(v), font:{size:11} }, grid:{color:'rgba(0,0,0,0.04)'} } } }
+  });
+}
+
+function updateCompare() {
+  const inc = parseInt(document.getElementById('cmp-inc').value);
+  const save = parseInt(document.getElementById('cmp-save').value);
+  document.getElementById('cmp-inc-out').textContent = fmt(inc);
+  document.getElementById('cmp-save-out').textContent = fmt(save);
+  document.getElementById('cmp-1yr').textContent = fmt(save*12);
+  document.getElementById('cmp-3yr').textContent = fmt(save*36);
+  document.getElementById('cmp-pct').textContent = Math.round((save/inc)*100)+'%';
+  const labels=['Year 1','Year 2','Year 3'];
+  if(compareChart) compareChart.destroy();
+  compareChart = new Chart(document.getElementById('compareChart'), {
+    type:'bar',
+    data:{ labels, datasets:[
+      { label:'Saver', data:[save*12,save*24,save*36], backgroundColor:'#1D9E75', borderRadius:3 },
+      { label:'Non-saver', data:[0,0,0], backgroundColor:'#D85A30', borderRadius:3 }
+    ]},
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false } },
+      scales:{ x:{ ticks:{ font:{size:12} }, grid:{display:false} },
+               y:{ ticks:{ callback:v=>fmt(v), font:{size:11} }, grid:{color:'rgba(0,0,0,0.04)'} } } }
+  });
+}
+
+function updateBudget() {
+  const income = parseInt(document.getElementById('income-slider').value)||0;
+  document.getElementById('income-out').textContent = fmt(income);
+  const needs = ['b-food','b-transport','b-phone','b-other-needs'].reduce((s,id)=>s+(parseInt(document.getElementById(id).value)||0),0);
+  const wants = ['b-eating','b-shopping','b-ent','b-other-wants'].reduce((s,id)=>s+(parseInt(document.getElementById(id).value)||0),0);
+  const savings = ['b-savings','b-emergency'].reduce((s,id)=>s+(parseInt(document.getElementById(id).value)||0),0);
+  const total = needs+wants+savings;
+  const left = income-total;
+  document.getElementById('q-needs').textContent = fmt(needs);
+  document.getElementById('q-wants').textContent = fmt(wants);
+  document.getElementById('q-savings').textContent = fmt(savings);
+  document.getElementById('q-left').textContent = fmt(left);
+  document.getElementById('q-left').style.color = left>=0 ? 'var(--teal)' : 'var(--coral)';
+  document.getElementById('sum-income').textContent = fmt(income);
+  document.getElementById('sum-expenses').textContent = fmt(total);
+  document.getElementById('sum-left').textContent = fmt(Math.abs(left));
+  const wrap = document.getElementById('sum-left-wrap');
+  if(left<0) { wrap.classList.add('bs-danger'); document.querySelector('.bs-lbl:last-child').textContent='over budget'; }
+  else { wrap.classList.remove('bs-danger'); }
+}
+
+const careers = [
+  { title:'Registered nurse', sal:75000, take:4300 },
+  { title:'Teacher', sal:58000, take:3450 },
+  { title:'Software developer', sal:105000, take:5800 },
+  { title:'Police officer', sal:65000, take:3900 },
+  { title:'Electrician', sal:68000, take:4050 },
+  { title:'Social worker', sal:52000, take:3150 },
+  { title:'Dental hygienist', sal:78000, take:4500 },
+  { title:'Accountant', sal:72000, take:4150 },
+  { title:'HVAC tech', sal:62000, take:3750 },
+  { title:'Graphic designer', sal:55000, take:3300 },
+  { title:'Financial analyst', sal:82000, take:4700 },
+  { title:'Cosmetologist', sal:38000, take:2500 },
+];
+
+const dmvCosts = [
+  { label:'Rent (1BR apartment)', pct:0.36, fixed:true, note:'DMV average: $1,800–$2,400/mo' },
+  { label:'Utilities (electric, gas, water)', amount:160, note:'Average DMV household' },
+  { label:'Groceries', amount:350, note:'Single adult, cooking at home' },
+  { label:'Transportation (car or transit)', amount:280, note:'Metro pass $100 or car payment + gas' },
+  { label:'Phone bill', amount:80, note:'Average monthly' },
+  { label:'Health insurance (if not employer)', amount:200, note:'Young adult plan estimate' },
+  { label:'Personal / clothing', amount:100, note:'Conservative monthly' },
+  { label:'Eating out / misc', amount:150, note:'Realistic for most people' },
+];
+
+function buildCareerGrid() {
+  const grid = document.getElementById('career-grid');
+  careers.forEach((c,i) => {
+    const btn = document.createElement('button');
+    btn.className = 'career-btn';
+    btn.id = 'cbtn-'+i;
+    btn.innerHTML = '<div class="job-title">'+c.title+'</div><div class="job-sal">~$'+Math.round(c.sal/1000)+'k/yr</div>';
+    btn.onclick = () => showCareerBudget(i);
+    grid.appendChild(btn);
+  });
+}
+
+function showCareerBudget(idx) {
+  document.querySelectorAll('.career-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('cbtn-'+idx).classList.add('selected');
+  const c = careers[idx];
+  const panel = document.getElementById('life-budget-panel');
+  panel.style.display = 'block';
+  document.getElementById('lb-title').textContent = 'Life as a '+c.title+' in DC/MD/VA';
+  document.getElementById('lb-sub').innerHTML = 'Estimated monthly take-home after taxes: <strong>'+fmt(c.take)+'</strong>';
+  document.getElementById('lr-income').textContent = fmt(c.take);
+
+  let totalExpenses = 0;
+  const rowsEl = document.getElementById('lb-rows');
+  rowsEl.innerHTML = '';
+
+  dmvCosts.forEach(cost => {
+    let amount = cost.fixed ? Math.round(c.take * cost.pct) : cost.amount;
+    totalExpenses += amount;
+    const pct = Math.min(100, Math.round((amount/c.take)*100));
+    const isHeavy = pct > 30;
+    rowsEl.innerHTML += `
+      <div class="life-row">
+        <span class="life-row-label">${cost.label}<br><span style="font-size:11px;color:var(--text-hint);">${cost.note}</span></span>
+        <div class="life-bar-wrap"><div class="life-bar ${isHeavy?'danger':''}" style="width:${pct}%"></div></div>
+        <span class="life-row-cost">${fmt(amount)}</span>
+      </div>`;
+  });
+
+  const left = c.take - totalExpenses;
+  document.getElementById('lr-expenses').textContent = fmt(totalExpenses);
+  const leftEl = document.getElementById('lr-left');
+  leftEl.textContent = fmt(Math.abs(left));
+  leftEl.className = 'life-result-val ' + (left >= 0 ? 'surplus' : 'deficit');
+  leftEl.previousElementSibling.textContent = left >= 0 ? 'Left for savings / goals' : 'Monthly shortfall';
+
+  let insight = '';
+  if(left < 0) insight = `On a ${c.title}'s salary in the DMV, these baseline costs actually exceed your take-home. That means side income, a roommate, or choosing a lower-cost area — or all three. This is why career choices and location choices are financial decisions.`;
+  else if(left < 500) insight = `After baseline costs, you have ${fmt(left)} left. That sounds okay until you realize it covers emergencies, car repairs, medical bills, and savings. Tight budgeting isn't optional at this income level in the DMV.`;
+  else insight = `With ${fmt(left)} left after baseline costs, you have real room to save, build an emergency fund, and work toward financial goals. The key is not letting lifestyle creep eat that margin as your salary grows.`;
+  document.getElementById('lb-insight').textContent = insight;
+  panel.scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+buildCareerGrid();
+updateWeekly();
+updateBudget();
+
+function downloadBudgetPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'pt', format: 'letter' });
+
+  const income = parseInt(document.getElementById('income-slider').value) || 0;
+  const fields = {
+    'Food / groceries': parseInt(document.getElementById('b-food').value)||0,
+    'Transportation': parseInt(document.getElementById('b-transport').value)||0,
+    'Phone bill': parseInt(document.getElementById('b-phone').value)||0,
+    'Other needs': parseInt(document.getElementById('b-other-needs').value)||0,
+    'Eating out / fast food': parseInt(document.getElementById('b-eating').value)||0,
+    'Shopping / clothes': parseInt(document.getElementById('b-shopping').value)||0,
+    'Entertainment': parseInt(document.getElementById('b-ent').value)||0,
+    'Other wants': parseInt(document.getElementById('b-other-wants').value)||0,
+    'Savings goal': parseInt(document.getElementById('b-savings').value)||0,
+    'Emergency fund': parseInt(document.getElementById('b-emergency').value)||0,
+  };
+  const needs = fields['Food / groceries']+fields['Transportation']+fields['Phone bill']+fields['Other needs'];
+  const wants = fields['Eating out / fast food']+fields['Shopping / clothes']+fields['Entertainment']+fields['Other wants'];
+  const savings = fields['Savings goal']+fields['Emergency fund'];
+  const total = needs+wants+savings;
+  const left = income-total;
+  const dti = income > 0 ? Math.round((total/income)*100) : 0;
+
+  const teal = [15, 110, 86];
+  const tealLight = [225, 245, 238];
+  const gray = [90, 90, 90];
+  const lightGray = [248, 247, 244];
+  const black = [26, 26, 26];
+
+  const W = 612, M = 48;
+  let y = 48;
+
+  doc.setFillColor(...teal);
+  doc.rect(0, 0, W, 90, 'F');
+  doc.setTextColor(255,255,255);
+  doc.setFontSize(22);
+  doc.setFont('helvetica','bold');
+  doc.text('My Budget Snapshot', M, 38);
+  doc.setFontSize(11);
+  doc.setFont('helvetica','normal');
+  doc.text('Together We Will Figure It Out  ·  Week 1: Your Money, Your Move', M, 58);
+  doc.setFontSize(10);
+  doc.text('Generated ' + new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}), M, 75);
+
+  y = 110;
+
+  doc.setFillColor(...tealLight);
+  doc.roundedRect(M, y, W-M*2, 52, 6, 6, 'F');
+  doc.setTextColor(...teal);
+  doc.setFontSize(11);
+  doc.setFont('helvetica','normal');
+  doc.text('Monthly take-home pay', M+16, y+20);
+  doc.setFontSize(22);
+  doc.setFont('helvetica','bold');
+  doc.text(fmt(income), M+16, y+40);
+
+  y += 68;
+
+  function drawSection(title, items, color) {
+    doc.setFillColor(...color);
+    doc.rect(M, y, W-M*2, 24, 'F');
+    doc.setTextColor(255,255,255);
+    doc.setFontSize(10);
+    doc.setFont('helvetica','bold');
+    doc.text(title.toUpperCase(), M+12, y+15);
+    y += 24;
+
+    items.forEach(([label, val], i) => {
+      doc.setFillColor(i%2===0 ? 255 : ...lightGray);
+      doc.rect(M, y, W-M*2, 22, 'F');
+      doc.setTextColor(...black);
+      doc.setFontSize(10);
+      doc.setFont('helvetica','normal');
+      doc.text(label, M+12, y+14);
+      doc.setFont('helvetica','bold');
+      doc.text(fmt(val), W-M-12, y+14, { align:'right' });
+      y += 22;
+    });
+
+    const sectionTotal = items.reduce((s,[,v])=>s+v,0);
+    doc.setFillColor(...color);
+    doc.rect(M, y, W-M*2, 22, 'F');
+    doc.setTextColor(255,255,255);
+    doc.setFontSize(10);
+    doc.setFont('helvetica','bold');
+    doc.text('Subtotal', M+12, y+14);
+    doc.text(fmt(sectionTotal), W-M-12, y+14, { align:'right' });
+    y += 22;
+    y += 10;
+    return sectionTotal;
+  }
+
+  drawSection('Needs', [
+    ['Food / groceries', fields['Food / groceries']],
+    ['Transportation', fields['Transportation']],
+    ['Phone bill', fields['Phone bill']],
+    ['Other needs', fields['Other needs']],
+  ], [15,110,86]);
+
+  drawSection('Wants', [
+    ['Eating out / fast food', fields['Eating out / fast food']],
+    ['Shopping / clothes', fields['Shopping / clothes']],
+    ['Entertainment', fields['Entertainment']],
+    ['Other wants', fields['Other wants']],
+  ], [83,74,183]);
+
+  drawSection('Savings', [
+    ['Savings goal', fields['Savings goal']],
+    ['Emergency fund', fields['Emergency fund']],
+  ], [186,117,23]);
+
+  y += 8;
+  doc.setFillColor(...(left >= 0 ? teal : [216,90,48]));
+  doc.roundedRect(M, y, W-M*2, 70, 6, 6, 'F');
+  doc.setTextColor(255,255,255);
+  doc.setFontSize(11);
+  doc.setFont('helvetica','normal');
+  doc.text('Total expenses: ' + fmt(total) + '   ·   DTI: ' + dti + '%  (goal: under 36%)', M+16, y+20);
+  doc.setFontSize(18);
+  doc.setFont('helvetica','bold');
+  doc.text(left >= 0 ? fmt(left) + ' left over each month' : fmt(Math.abs(left)) + ' over budget', M+16, y+48);
+  doc.setFontSize(10);
+  doc.setFont('helvetica','normal');
+  doc.text(left >= 0 ? 'Great start. Now protect this margin.' : 'Review your wants column — something can give.', M+16, y+62);
+
+  y += 90;
+  doc.setFillColor(...lightGray);
+  doc.roundedRect(M, y, W-M*2, 80, 6, 6, 'F');
+  doc.setTextColor(...teal);
+  doc.setFontSize(11);
+  doc.setFont('helvetica','bold');
+  doc.text('Your 30-day challenge', M+16, y+20);
+  doc.setTextColor(...gray);
+  doc.setFontSize(10);
+  doc.setFont('helvetica','normal');
+  doc.text('Track every dollar you spend this month. Mark each one W (want) or N (need).', M+16, y+36, { maxWidth: W-M*2-32 });
+  doc.text('Bring your totals back to the next session. Pick one want per week to cut.', M+16, y+52, { maxWidth: W-M*2-32 });
+  doc.setTextColor(...teal);
+  doc.setFont('helvetica','bolditalic');
+  doc.text("You're never alone. — TWWFIO", M+16, y+70);
+
+  doc.save('my-budget-week1-twwfio.pdf');
+}
+</script>
+</body>
+</html>
