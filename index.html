@@ -447,7 +447,7 @@
       <div class="tabs">
         <button class="tab active" data-savings="weekly">Saving weekly</button>
         <button class="tab" data-savings="compound">Compound interest</button>
-        <button class="tab" data-savings="compare">Save vs. don't save</button>
+        <button class="tab" data-savings="compare">Regular Savings vs HYSA vs Brokerage</button>
       </div>
 
       <div class="chart-panel">
@@ -494,25 +494,26 @@
 
         <div id="sv-compare" class="hidden-panel">
           <div class="slider-row">
-            <span class="slider-label">Monthly take-home</span>
-            <input type="range" min="400" max="3000" value="900" step="50" id="cmp-inc">
-            <span class="slider-val" id="cmp-inc-out">$900</span>
+            <span class="slider-label">Save per month</span>
+            <input type="range" min="10" max="500" value="100" step="10" id="cmp-save">
+            <span class="slider-val" id="cmp-save-out">$100</span>
           </div>
           <div class="slider-row">
-            <span class="slider-label">Save per month</span>
-            <input type="range" min="10" max="500" value="90" step="10" id="cmp-save">
-            <span class="slider-val" id="cmp-save-out">$90</span>
+            <span class="slider-label">Over how many years</span>
+            <input type="range" min="1" max="10" value="5" step="1" id="cmp-yrs">
+            <span class="slider-val" id="cmp-yrs-out">5 years</span>
           </div>
           <div class="metrics">
-            <div class="metric"><span class="metric-val" id="cmp-1yr">$1,080</span><span class="metric-lbl">saved — year 1</span></div>
-            <div class="metric"><span class="metric-val" id="cmp-3yr">$3,240</span><span class="metric-lbl">saved — year 3</span></div>
-            <div class="metric"><span class="metric-val" id="cmp-pct">10%</span><span class="metric-lbl">of income saved</span></div>
+            <div class="metric"><span class="metric-val" id="cmp-reg">$6,000</span><span class="metric-lbl">regular savings (0.5%)</span></div>
+            <div class="metric"><span class="metric-val" id="cmp-hysa">$6,630</span><span class="metric-lbl">HYSA (4.5%)</span></div>
+            <div class="metric"><span class="metric-val" id="cmp-brok">$7,744</span><span class="metric-lbl">brokerage (7% avg)</span></div>
           </div>
           <div class="legend">
-            <span><span class="ldot" style="background:#1D9E75;"></span>Saver</span>
-            <span><span class="ldot" style="background:#D85A30;"></span>Non-saver</span>
+            <span><span class="ldot" style="background:#B4B2A9;"></span>Regular savings (0.5% APY)</span>
+            <span><span class="ldot" style="background:#1D9E75;"></span>HYSA (4.5% APY)</span>
+            <span><span class="ldot" style="background:#534AB7;"></span>Brokerage (7% avg return)</span>
           </div>
-          <div class="chart-wrap"><canvas id="compareChart" role="img" aria-label="Grouped bar chart comparing saver versus non-saver over 3 years">Saver vs non-saver over 3 years.</canvas></div>
+          <div class="chart-wrap"><canvas id="compareChart" role="img" aria-label="Line chart comparing regular savings vs HYSA vs brokerage over time">Where you put your money matters.</canvas></div>
         </div>
       </div>
     </div>
@@ -756,24 +757,42 @@ function updateCompound() {
 }
 
 function updateCompare() {
-  const inc = parseInt(document.getElementById('cmp-inc').value);
   const save = parseInt(document.getElementById('cmp-save').value);
-  document.getElementById('cmp-inc-out').textContent = fmt(inc);
+  const yrs = parseInt(document.getElementById('cmp-yrs').value);
   document.getElementById('cmp-save-out').textContent = fmt(save);
-  document.getElementById('cmp-1yr').textContent = fmt(save*12);
-  document.getElementById('cmp-3yr').textContent = fmt(save*36);
-  document.getElementById('cmp-pct').textContent = Math.round((save/inc)*100)+'%';
-  const labels=['Year 1','Year 2','Year 3'];
+  document.getElementById('cmp-yrs-out').textContent = yrs + (yrs===1?' year':' years');
+
+  const labels = [];
+  const regData = [], hysaData = [], brokData = [];
+
+  for(let y=1; y<=yrs; y++) {
+    labels.push('Year ' + y);
+    var reg = 0, hysa = 0, brok = 0;
+    for(var m=1; m<=y*12; m++) {
+      reg = (reg + save) * (1 + 0.005/12);
+      hysa = (hysa + save) * (1 + 0.045/12);
+      brok = (brok + save) * (1 + 0.07/12);
+    }
+    regData.push(Math.round(reg));
+    hysaData.push(Math.round(hysa));
+    brokData.push(Math.round(brok));
+  }
+
+  document.getElementById('cmp-reg').textContent = fmt(regData[regData.length-1]);
+  document.getElementById('cmp-hysa').textContent = fmt(hysaData[hysaData.length-1]);
+  document.getElementById('cmp-brok').textContent = fmt(brokData[brokData.length-1]);
+
   if(compareChart) compareChart.destroy();
   compareChart = new Chart(document.getElementById('compareChart'), {
-    type:'bar',
+    type:'line',
     data:{ labels, datasets:[
-      { label:'Saver', data:[save*12,save*24,save*36], backgroundColor:'#1D9E75', borderRadius:3 },
-      { label:'Non-saver', data:[0,0,0], backgroundColor:'#D85A30', borderRadius:3 }
+      { label:'Regular savings (0.5%)', data:regData, borderColor:'#B4B2A9', backgroundColor:'rgba(180,178,169,0.08)', fill:true, tension:0.3, pointRadius:4, pointBackgroundColor:'#B4B2A9' },
+      { label:'HYSA (4.5%)', data:hysaData, borderColor:'#1D9E75', backgroundColor:'rgba(29,158,117,0.08)', fill:true, tension:0.3, pointRadius:4, pointBackgroundColor:'#1D9E75' },
+      { label:'Brokerage (7%)', data:brokData, borderColor:'#534AB7', backgroundColor:'rgba(83,74,183,0.08)', fill:true, tension:0.3, pointRadius:4, pointBackgroundColor:'#534AB7' }
     ]},
     options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false } },
-      scales:{ x:{ ticks:{ font:{size:12} }, grid:{display:false} },
-               y:{ ticks:{ callback:v=>fmt(v), font:{size:11} }, grid:{color:'rgba(0,0,0,0.04)'} } } }
+      scales:{ x:{ ticks:{ font:{size:11} }, grid:{display:false} },
+               y:{ ticks:{ callback:function(v){ return fmt(v); }, font:{size:11} }, grid:{color:'rgba(0,0,0,0.04)'} } } }
   });
 }
 
@@ -906,7 +925,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   ['wk-amt','wk-yrs'].forEach(id => { const el = document.getElementById(id); if(el) el.addEventListener('input', updateWeekly); });
   ['cp-start','cp-rate'].forEach(id => { const el = document.getElementById(id); if(el) el.addEventListener('input', updateCompound); });
-  ['cmp-inc','cmp-save'].forEach(id => { const el = document.getElementById(id); if(el) el.addEventListener('input', updateCompare); });
+  ['cmp-save','cmp-yrs'].forEach(id => { const el = document.getElementById(id); if(el) el.addEventListener('input', updateCompare); });
   const incSlider = document.getElementById('income-slider'); if(incSlider) incSlider.addEventListener('input', updateBudget);
   ['b-food','b-transport','b-phone','b-other-needs','b-eating','b-shopping','b-ent','b-other-wants','b-savings','b-emergency'].forEach(id => {
     const el = document.getElementById(id); if(el) el.addEventListener('input', updateBudget);
