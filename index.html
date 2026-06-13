@@ -346,6 +346,7 @@
     <button class="nav-pill" data-page="savings">Savings</button>
     <button class="nav-pill" data-page="budget">Budget</button>
     <button class="nav-pill" data-page="career">Real Life</button>
+    <button class="nav-pill" data-page="cash">Cash</button>
     <button class="nav-pill" data-page="challenge">Challenge</button>
   </div>
 </nav>
@@ -447,7 +448,7 @@
       <div class="tabs">
         <button class="tab active" data-savings="weekly">Saving weekly</button>
         <button class="tab" data-savings="compound">Compound interest</button>
-        <button class="tab" data-savings="compare">Regular Savings vs HYSA vs Brokerage</button>
+        <button class="tab" data-savings="compare">Save vs. don't save</button>
       </div>
 
       <div class="chart-panel">
@@ -637,6 +638,109 @@
     </div>
     <div style="display:flex; justify-content:space-between; margin-top:1.5rem;">
       <button class="tab" style="font-size:15px; padding:10px 28px;" data-page="budget">← Back</button>
+      <button class="tab active" style="font-size:15px; padding:10px 28px;" data-page="cash">Counting cash →</button>
+    </div>
+  </div>
+
+  <!-- CASH PAGE -->
+  <div id="page-cash" class="page">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">06</div>
+        <div class="section-title">Counting money</div>
+      </div>
+      <p style="font-size:15px; color:var(--text-muted); margin-bottom:1.5rem;">Two skills every cashier needs: making correct change and counting a drawer. Let's practice both.</p>
+
+      <div class="tabs">
+        <button class="tab active" data-cash="change">Making change</button>
+        <button class="tab" data-cash="till">Counting a till</button>
+      </div>
+
+      <!-- MAKING CHANGE -->
+      <div id="cash-change" class="hidden-panel active">
+        <div class="chart-panel">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem; flex-wrap:wrap; gap:10px;">
+            <div>
+              <div style="font-size:16px; font-weight:600; color:var(--text);">Make the correct change</div>
+              <div style="font-size:13px; color:var(--text-muted); margin-top:3px;">Enter how much change to give back, then check your answer.</div>
+            </div>
+            <button id="new-change-btn" style="background:var(--teal); color:white; border:none; border-radius:var(--radius-sm); padding:8px 18px; font-size:13px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif;">New problem</button>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:1.25rem;">
+            <div style="background:var(--teal-light); border-radius:var(--radius-sm); padding:1rem; text-align:center;">
+              <div style="font-size:12px; color:var(--teal); font-weight:600; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px;">Item costs</div>
+              <div style="font-family:'DM Serif Display',serif; font-size:32px; color:var(--teal);" id="change-cost">$7.43</div>
+            </div>
+            <div style="background:var(--amber-light); border-radius:var(--radius-sm); padding:1rem; text-align:center;">
+              <div style="font-size:12px; color:var(--amber); font-weight:600; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px;">Customer pays</div>
+              <div style="font-family:'DM Serif Display',serif; font-size:32px; color:var(--amber);" id="change-paid">$20.00</div>
+            </div>
+          </div>
+
+          <div style="margin-bottom:1rem;">
+            <label style="font-size:14px; font-weight:600; color:var(--text); display:block; margin-bottom:8px;">How much change do you give back?</label>
+            <div style="display:flex; gap:10px; align-items:center;">
+              <span style="font-size:18px; color:var(--text-muted);">$</span>
+              <input type="number" id="change-answer" step="0.01" min="0" placeholder="0.00" style="flex:1; padding:10px 14px; border:2px solid var(--border); border-radius:var(--radius-sm); font-size:18px; font-family:'DM Sans',sans-serif; outline:none; max-width:160px;">
+              <button id="check-change-btn" style="background:var(--teal); color:white; border:none; border-radius:var(--radius-sm); padding:10px 22px; font-size:14px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif;">Check</button>
+            </div>
+          </div>
+
+          <div id="change-result" style="display:none; padding:1rem; border-radius:var(--radius-sm); margin-bottom:1rem;"></div>
+
+          <div id="change-breakdown" style="display:none;">
+            <div style="font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-hint); margin-bottom:10px;">How to make that change</div>
+            <div id="change-coins" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:8px;"></div>
+          </div>
+
+          <div style="margin-top:1.25rem; padding:1rem; background:var(--surface); border-radius:var(--radius-sm);">
+            <div style="font-size:13px; font-weight:600; color:var(--text); margin-bottom:4px;">Pro tip</div>
+            <div style="font-size:13px; color:var(--text-muted); line-height:1.6;">Count change back out loud starting from the cost up to what they paid. If something costs $7.43 and they give you $20, say: "$7.43... 2 cents makes $7.45... nickel makes $7.50... 2 quarters makes $8... $2 makes $10... $10 makes $20."</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COUNTING A TILL -->
+      <div id="cash-till" class="hidden-panel">
+        <div class="chart-panel">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem; flex-wrap:wrap; gap:10px;">
+            <div>
+              <div style="font-size:16px; font-weight:600; color:var(--text);">Count your drawer</div>
+              <div style="font-size:13px; color:var(--text-muted); margin-top:3px;">Enter how many of each bill and coin you have. The total updates live.</div>
+            </div>
+            <button id="reset-till-btn" style="background:var(--surface); color:var(--text-muted); border:1px solid var(--border); border-radius:var(--radius-sm); padding:8px 18px; font-size:13px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif;">Reset</button>
+          </div>
+
+          <div style="margin-bottom:1.25rem;">
+            <div style="font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-hint); margin-bottom:10px;">Bills</div>
+            <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:8px;" id="bills-grid"></div>
+          </div>
+
+          <div style="margin-bottom:1.25rem;">
+            <div style="font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-hint); margin-bottom:10px;">Coins</div>
+            <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:8px;" id="coins-grid"></div>
+          </div>
+
+          <div style="background:var(--teal); color:white; border-radius:var(--radius); padding:1.25rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+            <div>
+              <div style="font-size:13px; opacity:0.8; margin-bottom:4px;">Total in drawer</div>
+              <div style="font-family:'DM Serif Display',serif; font-size:36px;" id="till-total">$0.00</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:13px; opacity:0.8; margin-bottom:4px;">Expected drawer amount</div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span style="font-size:18px; opacity:0.7;">$</span>
+                <input type="number" id="till-expected" placeholder="200.00" step="0.01" min="0" style="width:110px; padding:6px 10px; border:1px solid rgba(255,255,255,0.3); border-radius:var(--radius-sm); font-size:16px; font-family:'DM Sans',sans-serif; background:rgba(255,255,255,0.15); color:white; outline:none; text-align:right;">
+              </div>
+            </div>
+          </div>
+          <div id="till-status" style="display:none; margin-top:10px; padding:0.85rem 1rem; border-radius:var(--radius-sm); font-size:14px; font-weight:600;"></div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex; justify-content:space-between; margin-top:1.5rem;">
+      <button class="tab" style="font-size:15px; padding:10px 28px;" data-page="career">← Back</button>
       <button class="tab active" style="font-size:15px; padding:10px 28px;" data-page="challenge">Your take-home challenge →</button>
     </div>
   </div>
@@ -672,7 +776,7 @@
       </div>
     </div>
     <div style="display:flex; justify-content:space-between; margin-top:1.5rem;">
-      <button class="tab" style="font-size:15px; padding:10px 28px;" data-page="career">← Back</button>
+      <button class="tab" style="font-size:15px; padding:10px 28px;" data-page="cash">← Back</button>
       <button class="tab active" style="font-size:15px; padding:10px 28px;" data-page="intro">↩ Back to start</button>
     </div>
   </div>
@@ -680,7 +784,7 @@
 </div>
 
 <script>
-const pages = ['intro','banking','savings','budget','career','challenge'];
+const pages = ['intro','banking','savings','budget','career','cash','challenge'];
 let weeklyChart, compoundChart, compareChart;
 
 function showPage(id) {
@@ -901,35 +1005,208 @@ buildCareerGrid();
 updateWeekly();
 updateBudget();
 
-document.addEventListener('DOMContentLoaded', function() {
-  document.querySelectorAll('[data-page]').forEach(btn => {
-    btn.addEventListener('click', () => showPage(btn.dataset.page));
-  });
+// CASH PAGE
+var changeProblems = [
+  {cost:7.43,paid:10},{cost:3.17,paid:5},{cost:12.89,paid:20},
+  {cost:1.56,paid:2},{cost:8.75,paid:10},{cost:14.32,paid:20},
+  {cost:6.08,paid:10},{cost:19.47,paid:20},{cost:4.63,paid:5},
+  {cost:11.22,paid:15},{cost:2.94,paid:5},{cost:9.01,paid:10},
+  {cost:16.78,paid:20},{cost:3.50,paid:10},{cost:7.99,paid:20},
+  {cost:5.25,paid:20},{cost:13.60,paid:15},{cost:0.87,paid:1},
+  {cost:18.43,paid:20},{cost:6.66,paid:10}
+];
+var currentChange = {};
 
-  document.querySelectorAll('[data-savings]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('[data-savings]').forEach(b => b.classList.remove('active'));
+function newChangeProblem() {
+  var idx = Math.floor(Math.random() * changeProblems.length);
+  currentChange = changeProblems[idx];
+  document.getElementById('change-cost').textContent = '$' + currentChange.cost.toFixed(2);
+  document.getElementById('change-paid').textContent = '$' + currentChange.paid.toFixed(2);
+  document.getElementById('change-answer').value = '';
+  document.getElementById('change-result').style.display = 'none';
+  document.getElementById('change-breakdown').style.display = 'none';
+  document.getElementById('change-answer').style.borderColor = 'var(--border)';
+}
+
+function checkChange() {
+  var answer = parseFloat(document.getElementById('change-answer').value);
+  var correct = Math.round((currentChange.paid - currentChange.cost) * 100) / 100;
+  var resultEl = document.getElementById('change-result');
+  var input = document.getElementById('change-answer');
+  if(isNaN(answer)) { return; }
+  if(Math.abs(answer - correct) < 0.005) {
+    resultEl.style.display = 'block';
+    resultEl.style.background = 'var(--teal-light)';
+    resultEl.style.color = 'var(--teal)';
+    resultEl.innerHTML = '<strong>Correct!</strong> The change is $' + correct.toFixed(2) + '. Great job.';
+    input.style.borderColor = 'var(--teal-mid)';
+    showChangeBreakdown(correct);
+  } else {
+    resultEl.style.display = 'block';
+    resultEl.style.background = 'var(--coral-light)';
+    resultEl.style.color = 'var(--coral)';
+    resultEl.innerHTML = '<strong>Not quite.</strong> Try again. Hint: subtract $' + currentChange.cost.toFixed(2) + ' from $' + currentChange.paid.toFixed(2) + '.';
+    input.style.borderColor = 'var(--coral)';
+    document.getElementById('change-breakdown').style.display = 'none';
+  }
+}
+
+function showChangeBreakdown(amount) {
+  var cents = Math.round(amount * 100);
+  var denominations = [
+    {label:'$20 bills', value:2000, color:'#1D9E75'},
+    {label:'$10 bills', value:1000, color:'#1D9E75'},
+    {label:'$5 bills', value:500, color:'#1D9E75'},
+    {label:'$1 bills', value:100, color:'#1D9E75'},
+    {label:'Quarters', value:25, color:'#534AB7'},
+    {label:'Dimes', value:10, color:'#534AB7'},
+    {label:'Nickels', value:5, color:'#534AB7'},
+    {label:'Pennies', value:1, color:'#534AB7'}
+  ];
+  var container = document.getElementById('change-coins');
+  container.innerHTML = '';
+  var remaining = cents;
+  denominations.forEach(function(d) {
+    var count = Math.floor(remaining / d.value);
+    remaining = remaining % d.value;
+    if(count > 0) {
+      container.innerHTML += '<div style="background:var(--surface); border-radius:var(--radius-sm); padding:0.75rem; text-align:center;">' +
+        '<div style="font-family:DM Serif Display,serif; font-size:22px; color:' + d.color + ';">' + count + '</div>' +
+        '<div style="font-size:12px; color:var(--text-muted); margin-top:2px;">' + d.label + '</div>' +
+        '</div>';
+    }
+  });
+  document.getElementById('change-breakdown').style.display = 'block';
+}
+
+var billDenoms = [
+  {label:'$100 bills', value:100},
+  {label:'$50 bills', value:50},
+  {label:'$20 bills', value:20},
+  {label:'$10 bills', value:10},
+  {label:'$5 bills', value:5},
+  {label:'$1 bills', value:1}
+];
+var coinDenoms = [
+  {label:'Quarters ($0.25)', value:0.25},
+  {label:'Dimes ($0.10)', value:0.10},
+  {label:'Nickels ($0.05)', value:0.05},
+  {label:'Pennies ($0.01)', value:0.01}
+];
+
+function buildTillGrid() {
+  var bg = document.getElementById('bills-grid');
+  var cg = document.getElementById('coins-grid');
+  billDenoms.forEach(function(d, i) {
+    bg.innerHTML += '<div style="background:var(--surface); border-radius:var(--radius-sm); padding:0.75rem;">' +
+      '<div style="font-size:12px; color:var(--text-muted); margin-bottom:6px;">' + d.label + '</div>' +
+      '<input type="number" id="till-bill-' + i + '" min="0" value="0" style="width:100%; padding:6px 8px; border:1px solid var(--border); border-radius:var(--radius-sm); font-size:16px; font-family:DM Sans,sans-serif; text-align:center; outline:none;">' +
+      '</div>';
+  });
+  coinDenoms.forEach(function(d, i) {
+    cg.innerHTML += '<div style="background:var(--surface); border-radius:var(--radius-sm); padding:0.75rem;">' +
+      '<div style="font-size:12px; color:var(--text-muted); margin-bottom:6px;">' + d.label + '</div>' +
+      '<input type="number" id="till-coin-' + i + '" min="0" value="0" style="width:100%; padding:6px 8px; border:1px solid var(--border); border-radius:var(--radius-sm); font-size:16px; font-family:DM Sans,sans-serif; text-align:center; outline:none;">' +
+      '</div>';
+  });
+  billDenoms.forEach(function(d, i) {
+    document.getElementById('till-bill-' + i).addEventListener('input', updateTill);
+  });
+  coinDenoms.forEach(function(d, i) {
+    document.getElementById('till-coin-' + i).addEventListener('input', updateTill);
+  });
+}
+
+function updateTill() {
+  var total = 0;
+  billDenoms.forEach(function(d, i) {
+    var count = parseInt(document.getElementById('till-bill-' + i).value) || 0;
+    total += count * d.value;
+  });
+  coinDenoms.forEach(function(d, i) {
+    var count = parseInt(document.getElementById('till-coin-' + i).value) || 0;
+    total += count * d.value;
+  });
+  total = Math.round(total * 100) / 100;
+  document.getElementById('till-total').textContent = '$' + total.toFixed(2);
+  var expected = parseFloat(document.getElementById('till-expected').value);
+  var statusEl = document.getElementById('till-status');
+  if(!isNaN(expected) && expected > 0) {
+    var diff = Math.round((total - expected) * 100) / 100;
+    statusEl.style.display = 'block';
+    if(Math.abs(diff) < 0.005) {
+      statusEl.style.background = 'var(--teal-light)';
+      statusEl.style.color = 'var(--teal)';
+      statusEl.textContent = 'Drawer is exact. You are balanced.';
+    } else if(diff > 0) {
+      statusEl.style.background = 'var(--amber-light)';
+      statusEl.style.color = 'var(--amber)';
+      statusEl.textContent = 'Drawer is $' + diff.toFixed(2) + ' over. Double check your count.';
+    } else {
+      statusEl.style.background = 'var(--coral-light)';
+      statusEl.style.color = 'var(--coral)';
+      statusEl.textContent = 'Drawer is $' + Math.abs(diff).toFixed(2) + ' short. Recount carefully.';
+    }
+  } else {
+    statusEl.style.display = 'none';
+  }
+}
+
+function resetTill() {
+  billDenoms.forEach(function(d, i) { document.getElementById('till-bill-' + i).value = 0; });
+  coinDenoms.forEach(function(d, i) { document.getElementById('till-coin-' + i).value = 0; });
+  document.getElementById('till-expected').value = '';
+  document.getElementById('till-total').textContent = '$0.00';
+  document.getElementById('till-status').style.display = 'none';
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('[data-page]').forEach(function(btn) {
+    btn.addEventListener('click', function() { showPage(btn.dataset.page); });
+  });
+  document.querySelectorAll('[data-savings]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('[data-savings]').forEach(function(b) { b.classList.remove('active'); });
       btn.classList.add('active');
-      ['weekly','compound','compare'].forEach(t => document.getElementById('sv-'+t).classList.remove('active'));
+      ['weekly','compound','compare'].forEach(function(t) { document.getElementById('sv-'+t).classList.remove('active'); });
       document.getElementById('sv-'+btn.dataset.savings).classList.add('active');
-      setTimeout(() => {
+      setTimeout(function() {
         if(btn.dataset.savings==='weekly') updateWeekly();
         if(btn.dataset.savings==='compound') updateCompound();
         if(btn.dataset.savings==='compare') updateCompare();
       }, 50);
     });
   });
-
-  const dlBtn = document.getElementById('download-btn');
-  if(dlBtn) dlBtn.addEventListener('click', downloadBudgetPDF);
-
-  ['wk-amt','wk-yrs'].forEach(id => { const el = document.getElementById(id); if(el) el.addEventListener('input', updateWeekly); });
-  ['cp-start','cp-rate'].forEach(id => { const el = document.getElementById(id); if(el) el.addEventListener('input', updateCompound); });
-  ['cmp-save','cmp-yrs'].forEach(id => { const el = document.getElementById(id); if(el) el.addEventListener('input', updateCompare); });
-  const incSlider = document.getElementById('income-slider'); if(incSlider) incSlider.addEventListener('input', updateBudget);
-  ['b-food','b-transport','b-phone','b-other-needs','b-eating','b-shopping','b-ent','b-other-wants','b-savings','b-emergency'].forEach(id => {
-    const el = document.getElementById(id); if(el) el.addEventListener('input', updateBudget);
+  document.querySelectorAll('[data-cash]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('[data-cash]').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      document.getElementById('cash-change').classList.remove('active');
+      document.getElementById('cash-till').classList.remove('active');
+      document.getElementById('cash-'+btn.dataset.cash).classList.add('active');
+    });
   });
+  var dlBtn = document.getElementById('download-btn');
+  if(dlBtn) dlBtn.addEventListener('click', downloadBudgetPDF);
+  var ncBtn = document.getElementById('new-change-btn');
+  if(ncBtn) ncBtn.addEventListener('click', newChangeProblem);
+  var ccBtn = document.getElementById('check-change-btn');
+  if(ccBtn) ccBtn.addEventListener('click', checkChange);
+  var rtBtn = document.getElementById('reset-till-btn');
+  if(rtBtn) rtBtn.addEventListener('click', resetTill);
+  var teEl = document.getElementById('till-expected');
+  if(teEl) teEl.addEventListener('input', updateTill);
+  var caEl = document.getElementById('change-answer');
+  if(caEl) caEl.addEventListener('keydown', function(e) { if(e.key==='Enter') checkChange(); });
+  ['wk-amt','wk-yrs'].forEach(function(id) { var el=document.getElementById(id); if(el) el.addEventListener('input', updateWeekly); });
+  ['cp-start','cp-rate'].forEach(function(id) { var el=document.getElementById(id); if(el) el.addEventListener('input', updateCompound); });
+  ['cmp-save','cmp-yrs'].forEach(function(id) { var el=document.getElementById(id); if(el) el.addEventListener('input', updateCompare); });
+  var incSlider = document.getElementById('income-slider'); if(incSlider) incSlider.addEventListener('input', updateBudget);
+  ['b-food','b-transport','b-phone','b-other-needs','b-eating','b-shopping','b-ent','b-other-wants','b-savings','b-emergency'].forEach(function(id) {
+    var el = document.getElementById(id); if(el) el.addEventListener('input', updateBudget);
+  });
+  newChangeProblem();
+  buildTillGrid();
 });
 
 function downloadBudgetPDF() {
